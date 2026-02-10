@@ -1,0 +1,178 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CondoSmart AI - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .view-content { display: none; }
+        .view-content.active { display: block; }
+        .sidebar-item.active { background-color: #4f46e5; color: white; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 h-screen overflow-hidden flex flex-col md:flex-row">
+    
+    <!-- Sidebar -->
+    <aside id="sidebar" class="bg-white border-r border-slate-200 w-64 h-full hidden md:flex flex-col p-6 z-50">
+        <div class="flex items-center gap-3 mb-10 px-2">
+            <div class="bg-indigo-600 w-10 h-10 rounded-2xl flex items-center justify-center text-white shadow-lg">
+                <i class="fas fa-city"></i>
+            </div>
+            <h1 class="font-black uppercase tracking-tighter text-xl italic">CondoSmart <span class="text-indigo-600">AI</span></h1>
+        </div>
+
+        <nav class="flex-1 space-y-2">
+            <button onclick="showView('v-dashboard')" class="sidebar-item w-full flex items-center gap-4 p-4 rounded-2xl font-bold text-sm text-slate-600 hover:bg-slate-50 transition-all active">
+                <i class="fas fa-chart-line w-5"></i> Painel
+            </button>
+            <button onclick="showView('v-services')" class="sidebar-item w-full flex items-center gap-4 p-4 rounded-2xl font-bold text-sm text-slate-600 hover:bg-slate-50 transition-all">
+                <i class="fas fa-tasks w-5"></i> Central
+            </button>
+            <button onclick="showView('v-residents')" class="sidebar-item w-full flex items-center gap-4 p-4 rounded-2xl font-bold text-sm text-slate-600 hover:bg-slate-50 transition-all">
+                <i class="fas fa-users w-5"></i> Moradores
+            </button>
+            <button onclick="showView('v-concierge')" class="sidebar-item w-full flex items-center gap-4 p-4 rounded-2xl font-bold text-sm text-slate-600 hover:bg-slate-50 transition-all">
+                <i class="fas fa-shield-alt w-5"></i> Portaria IA
+            </button>
+            
+            <div class="pt-4 border-t border-slate-50">
+                <a href="condominio.html" class="w-full flex items-center gap-4 p-4 rounded-2xl font-black text-[10px] uppercase tracking-widest text-indigo-600 hover:bg-indigo-50 transition-all">
+                    <i class="fas fa-plus-circle w-5 text-sm"></i> Criar condomínio
+                </a>
+            </div>
+        </nav>
+
+        <div class="mt-auto pt-6 border-t border-slate-100">
+            <button onclick="logout()" class="w-full flex items-center gap-4 p-4 rounded-2xl font-bold text-sm text-red-500 hover:bg-red-50 transition-all">
+                <i class="fas fa-sign-out-alt w-5"></i> Sair
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col h-full relative">
+        <!-- Header -->
+        <header class="bg-white/80 backdrop-blur-md border-b border-slate-200 px-8 py-4 flex items-center justify-between sticky top-0 z-40">
+            <div class="flex items-center gap-4">
+                <button class="md:hidden text-slate-600"><i class="fas fa-bars"></i></button>
+                <h2 id="view-title" class="text-lg font-black uppercase tracking-tighter">Painel de Controle</h2>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="text-right hidden sm:block">
+                    <p id="user-name" class="text-sm font-black text-slate-900">Carregando...</p>
+                    <p id="user-role" class="text-[9px] font-black uppercase text-indigo-600 tracking-widest">Acessando...</p>
+                </div>
+                <img id="user-photo" src="https://i.pravatar.cc/150" class="w-10 h-10 rounded-full border-2 border-white shadow-md">
+            </div>
+        </header>
+
+        <!-- Dynamic Views Area -->
+        <div class="flex-1 overflow-y-auto p-8 bg-slate-50">
+            <div class="max-w-7xl mx-auto h-full pb-10">
+                
+                <!-- VIEW: Dashboard -->
+                <section id="v-dashboard" class="view-content active animate-fadeIn space-y-8">
+                    <div class="bg-indigo-600 rounded-[2.5rem] p-10 text-white shadow-2xl relative overflow-hidden">
+                        <div class="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                            <div>
+                                <h2 id="condominio" class="text-4xl font-black mb-2 uppercase tracking-tighter">Carregando Condomínio...</h2>
+                                <p class="text-indigo-100 font-medium italic">Bem-vindo à gestão do futuro.</p>
+                            </div>
+                            <a href="condominio.html" class="px-6 py-3 bg-white/20 hover:bg-white/30 backdrop-blur-xl border border-white/20 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all whitespace-nowrap">
+                                <i class="fas fa-plus mr-2"></i> Novo Condomínio
+                            </a>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm flex items-center gap-4">
+                            <div class="w-12 h-12 bg-amber-50 text-amber-500 rounded-2xl flex items-center justify-center text-xl"><i class="fas fa-box"></i></div>
+                            <div><p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Encomendas</p><p class="text-lg font-black">12 Pendentes</p></div>
+                        </div>
+                        <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm flex items-center gap-4">
+                            <div class="w-12 h-12 bg-emerald-50 text-emerald-500 rounded-2xl flex items-center justify-center text-xl"><i class="fas fa-car"></i></div>
+                            <div><p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Veículos</p><p class="text-lg font-black">45 Ativos</p></div>
+                        </div>
+                        <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm flex items-center gap-4">
+                            <div class="w-12 h-12 bg-indigo-50 text-indigo-500 rounded-2xl flex items-center justify-center text-xl"><i class="fas fa-calendar"></i></div>
+                            <div><p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Reservas</p><p class="text-lg font-black">3 Hoje</p></div>
+                        </div>
+                        <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm flex items-center gap-4">
+                            <div class="w-12 h-12 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center text-xl"><i class="fas fa-exclamation-circle"></i></div>
+                            <div><p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Ocorrências</p><p class="text-lg font-black">2 Abertas</p></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW: Central de Serviços -->
+                <section id="v-services" class="view-content animate-fadeIn space-y-8">
+                    <h3 class="text-2xl font-black uppercase tracking-tighter">Central de Serviços</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-6" id="services-grid">
+                        <!-- Gerado via JS -->
+                    </div>
+                </section>
+
+                <!-- VIEW: Moradores -->
+                <section id="v-residents" class="view-content animate-fadeIn space-y-8">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-2xl font-black uppercase tracking-tighter">Gestão de Moradores</h3>
+                        <button class="px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold text-xs uppercase tracking-widest shadow-lg">Novo Cadastro</button>
+                    </div>
+                    <div class="bg-white rounded-[2.5rem] border border-slate-200 overflow-hidden">
+                        <table class="w-full text-left">
+                            <thead class="bg-slate-50 border-b border-slate-100">
+                                <tr>
+                                    <th class="p-6 text-[10px] font-black uppercase text-slate-400">Morador</th>
+                                    <th class="p-6 text-[10px] font-black uppercase text-slate-400">Unidade</th>
+                                    <th class="p-6 text-[10px] font-black uppercase text-slate-400">Telefone</th>
+                                    <th class="p-6 text-[10px] font-black uppercase text-slate-400">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="residents-table">
+                                <!-- Preenchido via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- VIEW: Portaria IA -->
+                <section id="v-concierge" class="view-content animate-fadeIn space-y-8">
+                    <div class="bg-slate-900 rounded-[2.5rem] p-10 text-white flex flex-col items-center text-center gap-6">
+                        <div class="w-24 h-24 bg-indigo-600 rounded-full flex items-center justify-center text-3xl shadow-2xl animate-pulse">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3 class="text-3xl font-black uppercase">Concierge Virtual</h3>
+                        <p class="text-slate-400 max-w-md">O sistema de Inteligência Artificial está processando os dados do condomínio em tempo real.</p>
+                        <button class="px-8 py-4 bg-white text-slate-900 rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl">Ativar Conversa por Voz</button>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="js/dashboard.js"></script>
+    <script>
+        function showView(viewId) {
+            document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            
+            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+            const btn = Array.from(document.querySelectorAll('.sidebar-item')).find(b => b.getAttribute('onclick').includes(viewId));
+            if (btn) btn.classList.add('active');
+
+            const titles = {
+                'v-dashboard': 'Painel de Controle',
+                'v-services': 'Central de Serviços',
+                'v-residents': 'Gestão de Moradores',
+                'v-concierge': 'Portaria Digital IA'
+            };
+            document.getElementById('view-title').innerText = titles[viewId];
+        }
+    </script>
+</body>
+</html>
