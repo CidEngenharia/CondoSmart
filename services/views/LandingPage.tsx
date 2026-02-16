@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { AppView } from '../types';
-import { Shield, Zap, Users, BarChart3, MessageSquare, Smartphone, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Shield, Zap, Users, BarChart3, MessageSquare, Smartphone, ArrowRight, CheckCircle2, Building2 } from 'lucide-react';
 
 interface LandingPageProps {
   onStart: () => void;
@@ -160,7 +160,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStart, onLogin }) => {
       <footer className="py-12 border-t border-slate-100">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex items-center gap-3">
-            <img src="/logo-icon.jpg" alt="Logo" className="w-8 h-8 rounded-lg" />
+            <div className="bg-indigo-600 p-1.5 rounded-lg text-white">
+              <Building2 size={20} />
+            </div>
             <span className="font-black text-lg tracking-tighter">CondoSmarTI</span>
           </div>
           <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { AppView, User } from '@/services/types';
-import { Menu, LogOut } from 'lucide-react';
+import { Menu, LogOut, Building2 } from 'lucide-react';
 
 interface HeaderProps {
   currentView: AppView;
@@ -41,7 +41,9 @@ const Header: React.FC<HeaderProps> = ({ currentView, isLoggedIn, onLogin, onLog
           <Menu size={24} />
         </button>
         <div className="hidden sm:flex items-center gap-2">
-          <img src="/logo-icon.jpg" alt="Logo" className="w-10 h-10 rounded-lg object-cover shadow-sm" />
+          <div className="bg-indigo-600 p-2 rounded-xl text-white shadow-lg shadow-indigo-100">
+            <Building2 size={20} />
+          </div>
           <h1 className="font-black text-xl tracking-tighter">CondoSmarTI</h1>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Building2 } from 'lucide-react';
 
 interface AboutProps {
   onBack?: () => void;
@@ -19,7 +19,7 @@ const About: React.FC<AboutProps> = ({ onBack }) => {
 
       <section className="text-center space-y-6">
         <div className="w-20 h-20 bg-indigo-600 rounded-2xl flex items-center justify-center text-white text-3xl mx-auto shadow-xl shadow-indigo-100">
-          <i className="fas fa-city"></i>
+          <Building2 size={40} />
         </div>
         <h2 className="text-3xl font-black text-gray-900 tracking-tight">O que é o CondoSmarTI?</h2>
         <p className="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
@@ -44,12 +44,8 @@ const About: React.FC<AboutProps> = ({ onBack }) => {
 
       <section className="bg-gray-300 rounded-[2rem] p-8 text-black shadow-xl relative overflow-hidden">
         <div className="relative z-10 flex flex-col sm:flex-row items-center sm:items-start gap-6">
-          <div className="w-20 h-20 rounded-full border-2 border-indigo-500/50 overflow-hidden shrink-0 shadow-lg bg-white">
-             <img 
-               src="/logo-icon.jpg" 
-               className="w-full h-full object-contain" 
-               alt="CidEngenharia Logo" 
-             />
+          <div className="w-20 h-20 rounded-full border-2 border-indigo-500/50 overflow-hidden shrink-0 shadow-lg bg-white flex items-center justify-center text-indigo-600">
+             <Building2 size={40} />
           </div>
           <div className="space-y-4 text-center sm:text-left flex-1">
             <div>
