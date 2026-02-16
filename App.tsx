@@ -16,12 +16,13 @@ import Patrimony from './services/views/Patrimony';
 import Login from './services/views/Login';
 import CreateCondo from './services/views/CreateCondo';
 import Billing from './services/views/Billing';
+import LandingPage from './services/views/LandingPage';
 import { supabase } from './js/supabase';
 import ToastProvider from './src/components/ToastProvider';
 import toast from 'react-hot-toast';
 
 const App: React.FC = () => {
-  const [currentView, setCurrentView] = useState<AppView>(AppView.PLANS);
+  const [currentView, setCurrentView] = useState<AppView>(AppView.LANDING);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -132,14 +133,14 @@ const App: React.FC = () => {
     setIsLoggedIn(false);
     setCurrentUser(null);
     setIsDemoMode(false);
-    setCurrentView(AppView.PLANS);
+    setCurrentView(AppView.LANDING);
     toast.success('Sessão encerrada.');
   };
 
   const handleBackToServices = () => setCurrentView(AppView.SERVICES);
 
   if (currentView === AppView.LOGIN) {
-    return <Login onDemoLogin={handleDemoLogin} onBackToHome={() => setCurrentView(AppView.PLANS)} />;
+    return <Login onDemoLogin={handleDemoLogin} onBackToHome={() => setCurrentView(AppView.LANDING)} />;
   }
 
   return (
@@ -166,8 +167,15 @@ const App: React.FC = () => {
           isDemoMode={isDemoMode}
         />
         
-        <main className="flex-1 overflow-y-auto p-4 md:p-8">
-          <div className="max-w-7xl mx-auto h-full pb-24 md:pb-8">
+        <main className="flex-1 overflow-y-auto">
+          <div className={`${currentView === AppView.LANDING ? '' : 'max-w-7xl mx-auto p-4 md:p-8'} h-full pb-24 md:pb-8`}>
+            {currentView === AppView.LANDING && (
+              <LandingPage 
+                onStart={() => setCurrentView(AppView.PLANS)} 
+                onLogin={() => setCurrentView(AppView.LOGIN)} 
+              />
+            )}
+
             {currentView === AppView.PLANS && (
               <Plans 
                 onSelectPlan={() => setCurrentView(AppView.LOGIN)} 
@@ -202,8 +210,8 @@ const App: React.FC = () => {
                 {currentView === AppView.ABOUT && <About onBack={handleBackToServices} />}
               </>
             ) : (
-              (currentView !== AppView.PLANS && currentView !== AppView.ABOUT) && (
-                <div className="flex flex-col items-center justify-center h-full text-center space-y-6">
+              (currentView !== AppView.LANDING && currentView !== AppView.PLANS && currentView !== AppView.ABOUT) && (
+                <div className="flex flex-col items-center justify-center h-full text-center space-y-6 p-8">
                    <div className="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-3xl flex items-center justify-center text-3xl">
                       <i className="fas fa-lock"></i>
                    </div>

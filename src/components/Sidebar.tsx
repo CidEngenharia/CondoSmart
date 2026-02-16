@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { AppView, PlanType, User, UserRole } from '@/services/types';
-import { X, LayoutDashboard, Briefcase, Users, Building2, ShieldCheck, CreditCard, Info, LogIn } from 'lucide-react';
+import { X, LayoutDashboard, Briefcase, Users, Building2, ShieldCheck, CreditCard, Info, LogIn, Presentation } from 'lucide-react';
 
 interface SidebarProps {
   currentView: AppView;
@@ -15,6 +15,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ currentView, onViewChange, isOpen, onToggle, currentUser, isLoggedIn }) => {
   const navItems = [
+    { view: AppView.LANDING, label: 'Apresentação', icon: Presentation, roles: [UserRole.RESIDENT, UserRole.CONDO_ADMIN, UserRole.SUPER_ADMIN], public: true },
     { view: AppView.DASHBOARD, label: 'Painel', icon: LayoutDashboard, roles: [UserRole.RESIDENT, UserRole.CONDO_ADMIN, UserRole.SUPER_ADMIN] },
     { view: AppView.SERVICES, label: 'Central', icon: Briefcase, roles: [UserRole.RESIDENT, UserRole.CONDO_ADMIN, UserRole.SUPER_ADMIN] },
     { view: AppView.RESIDENTS, label: 'Moradores', icon: Users, roles: [UserRole.RESIDENT, UserRole.CONDO_ADMIN, UserRole.SUPER_ADMIN] },

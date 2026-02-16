@@ -19,6 +19,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ currentView, isLoggedIn, onLogin, onLogout, onMenuToggle, currentUser, condoName, isDemoMode }) => {
   const getTitle = () => {
     switch (currentView) {
+      case AppView.LANDING: return 'Apresentação';
       case AppView.DASHBOARD: return 'Painel';
       case AppView.SERVICES: return 'Central';
       case AppView.CONCIERGE: return 'Portaria IA';
