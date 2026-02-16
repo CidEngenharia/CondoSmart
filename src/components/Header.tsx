@@ -40,7 +40,7 @@ const Header: React.FC<HeaderProps> = ({ currentView, isLoggedIn, onLogin, onLog
           <Menu size={24} />
         </button>
         <div className="hidden sm:flex items-center gap-2">
-          <img src="/logo-icon.jpg" alt="Logo" className="w-8 h-8 rounded-lg object-cover shadow-sm" />
+          <img src="/logo-icon.jpg" alt="Logo" className="w-10 h-10 rounded-lg object-cover shadow-sm" />
           <h1 className="font-black text-xl tracking-tighter">CondoSmarTI</h1>
         </div>
       </div>
