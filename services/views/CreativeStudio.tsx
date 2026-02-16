@@ -1,5 +1,5 @@
-
 import React, { useState } from 'react';
+import { ArrowLeft } from 'lucide-react';
 
 interface CreativeStudioProps {
   onAddAlert: (alert: { 
@@ -13,9 +13,10 @@ interface CreativeStudioProps {
     pollVotes?: number[],
     deadline?: string
   }) => void;
+  onBack?: () => void;
 }
 
-const CreativeStudio: React.FC<CreativeStudioProps> = ({ onAddAlert }) => {
+const CreativeStudio: React.FC<CreativeStudioProps> = ({ onAddAlert, onBack }) => {
   const [activeTab, setActiveTab] = useState<'recibo' | 'orcamento' | 'enquete'>('recibo');
   const [loading, setLoading] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
@@ -78,6 +79,15 @@ const CreativeStudio: React.FC<CreativeStudioProps> = ({ onAddAlert }) => {
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto animate-fadeIn pb-10">
+      {onBack && (
+        <button 
+          onClick={onBack}
+          className="flex items-center gap-2 text-slate-400 hover:text-indigo-600 transition-colors text-[10px] font-black uppercase tracking-widest mb-4"
+        >
+          <ArrowLeft size={14} /> Voltar para Central
+        </button>
+      )}
+
       <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-2xl overflow-hidden">
         {/* Header Tabs */}
         <div className="flex border-b border-slate-100 bg-slate-50/50">

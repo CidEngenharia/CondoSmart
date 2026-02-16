@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { CondoData, PlanType, SubscriptionStatus } from '../types';
+import { ArrowLeft } from 'lucide-react';
 
 interface BillingProps {
   condoData: CondoData;
   onManagePlan: () => void;
+  onBack?: () => void;
 }
 
-const Billing: React.FC<BillingProps> = ({ condoData, onManagePlan }) => {
+const Billing: React.FC<BillingProps> = ({ condoData, onManagePlan, onBack }) => {
   const [history] = useState([
     { id: '1', date: new Date().toLocaleDateString('pt-BR'), amount: 'R$ 399,00', status: 'Pago', method: 'Cartão •••• 4455' },
   ]);
@@ -29,6 +31,15 @@ const Billing: React.FC<BillingProps> = ({ condoData, onManagePlan }) => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-10 animate-fadeIn py-6">
+      {onBack && (
+        <button 
+          onClick={onBack}
+          className="flex items-center gap-2 text-slate-400 hover:text-indigo-600 transition-colors text-[10px] font-black uppercase tracking-widest mb-4"
+        >
+          <ArrowLeft size={14} /> Voltar para Central
+        </button>
+      )}
+
       <div className="flex justify-between items-end">
         <div>
           <h2 className="text-4xl font-black text-slate-900 tracking-tighter uppercase leading-none">Faturamento</h2>

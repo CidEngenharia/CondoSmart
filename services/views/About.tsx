@@ -1,8 +1,22 @@
 import React from 'react';
+import { ArrowLeft } from 'lucide-react';
 
-const About: React.FC = () => {
+interface AboutProps {
+  onBack?: () => void;
+}
+
+const About: React.FC<AboutProps> = ({ onBack }) => {
   return (
     <div className="max-w-4xl mx-auto space-y-12 animate-fadeIn py-12">
+      {onBack && (
+        <button 
+          onClick={onBack}
+          className="flex items-center gap-2 text-slate-400 hover:text-indigo-600 transition-colors text-[10px] font-black uppercase tracking-widest mb-4"
+        >
+          <ArrowLeft size={14} /> Voltar para Central
+        </button>
+      )}
+
       <section className="text-center space-y-6">
         <div className="w-20 h-20 bg-indigo-600 rounded-2xl flex items-center justify-center text-white text-3xl mx-auto shadow-xl shadow-indigo-100">
           <i className="fas fa-city"></i>

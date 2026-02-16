@@ -1,6 +1,6 @@
-
 import React, { useState } from 'react';
 import { User, UserRole } from '../types';
+import { ArrowLeft } from 'lucide-react';
 
 interface DeliveryData {
   id: string;
@@ -40,9 +40,10 @@ const INITIAL_DELIVERIES: DeliveryData[] = [
 
 interface DeliveriesProps {
   currentUser: User | null;
+  onBack?: () => void;
 }
 
-const Deliveries: React.FC<DeliveriesProps> = ({ currentUser }) => {
+const Deliveries: React.FC<DeliveriesProps> = ({ currentUser, onBack }) => {
   const [deliveries, setDeliveries] = useState<DeliveryData[]>(INITIAL_DELIVERIES);
   const [search, setSearch] = useState('');
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
@@ -114,6 +115,15 @@ const Deliveries: React.FC<DeliveriesProps> = ({ currentUser }) => {
 
   return (
     <div className="space-y-8 animate-fadeIn pb-10">
+      {onBack && (
+        <button 
+          onClick={onBack}
+          className="flex items-center gap-2 text-slate-400 hover:text-indigo-600 transition-colors text-[10px] font-black uppercase tracking-widest mb-4"
+        >
+          <ArrowLeft size={14} /> Voltar para Central
+        </button>
+      )}
+
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
           <h2 className="text-4xl font-black text-slate-900 tracking-tighter uppercase leading-none">Gestão de Encomendas</h2>

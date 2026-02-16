@@ -1,6 +1,6 @@
-
 import React, { useState } from 'react';
 import { User, UserRole } from '../types';
+import { ArrowLeft } from 'lucide-react';
 
 interface ReservationData {
   id: string;
@@ -53,9 +53,10 @@ const INITIAL_RESERVATIONS: ReservationData[] = [
 
 interface ReservationsProps {
   currentUser: User | null;
+  onBack?: () => void;
 }
 
-const Reservations: React.FC<ReservationsProps> = ({ currentUser }) => {
+const Reservations: React.FC<ReservationsProps> = ({ currentUser, onBack }) => {
   const [reservations, setReservations] = useState<ReservationData[]>(INITIAL_RESERVATIONS);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -139,6 +140,15 @@ const Reservations: React.FC<ReservationsProps> = ({ currentUser }) => {
 
   return (
     <div className="space-y-8 animate-fadeIn pb-12">
+      {onBack && (
+        <button 
+          onClick={onBack}
+          className="flex items-center gap-2 text-slate-400 hover:text-indigo-600 transition-colors text-[10px] font-black uppercase tracking-widest mb-4"
+        >
+          <ArrowLeft size={14} /> Voltar para Central
+        </button>
+      )}
+
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
           <h2 className="text-4xl font-black text-slate-900 tracking-tighter uppercase leading-none">Reservas de Áreas</h2>

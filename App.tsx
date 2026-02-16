@@ -28,7 +28,7 @@ const App: React.FC = () => {
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [isDemoMode, setIsDemoMode] = useState(false);
   const [condoData, setCondoData] = useState<CondoData>({
-    name: 'CondoSmart',
+    name: 'CondoSmarTI',
     cnpj: '',
     adminName: '',
     syndicName: '',
@@ -136,6 +136,8 @@ const App: React.FC = () => {
     toast.success('Sessão encerrada.');
   };
 
+  const handleBackToServices = () => setCurrentView(AppView.SERVICES);
+
   if (currentView === AppView.LOGIN) {
     return <Login onDemoLogin={handleDemoLogin} onBackToHome={() => setCurrentView(AppView.PLANS)} />;
   }
@@ -188,16 +190,16 @@ const App: React.FC = () => {
                   />
                 )}
                 {currentView === AppView.SERVICES && <Services user={currentUser} condoData={condoData} setView={setCurrentView} />}
-                {currentView === AppView.RESIDENTS && <Residents currentUser={currentUser} />}
-                {currentView === AppView.VEHICLES && <Vehicles currentUser={currentUser} />}
-                {currentView === AppView.DELIVERIES && <Deliveries currentUser={currentUser} />}
-                {currentView === AppView.RESERVATIONS && <Reservations currentUser={currentUser} />}
-                {currentView === AppView.PATRIMONY && <Patrimony condoData={condoData} setCondoData={setCondoData} isAdmin={currentUser?.role !== UserRole.RESIDENT} />}
-                {currentView === AppView.CONCIERGE && <Concierge />}
-                {currentView === AppView.CREATIVE && <CreativeStudio onAddAlert={(a: any) => setAlerts(p => [a, ...p])} />}
+                {currentView === AppView.RESIDENTS && <Residents currentUser={currentUser} onBack={handleBackToServices} />}
+                {currentView === AppView.VEHICLES && <Vehicles currentUser={currentUser} onBack={handleBackToServices} />}
+                {currentView === AppView.DELIVERIES && <Deliveries currentUser={currentUser} onBack={handleBackToServices} />}
+                {currentView === AppView.RESERVATIONS && <Reservations currentUser={currentUser} onBack={handleBackToServices} />}
+                {currentView === AppView.PATRIMONY && <Patrimony condoData={condoData} setCondoData={setCondoData} isAdmin={currentUser?.role !== UserRole.RESIDENT} onBack={handleBackToServices} />}
+                {currentView === AppView.CONCIERGE && <Concierge onBack={handleBackToServices} />}
+                {currentView === AppView.CREATIVE && <CreativeStudio onAddAlert={(a: any) => setAlerts(p => [a, ...p])} onBack={handleBackToServices} />}
                 {currentView === AppView.CREATE_CONDO && <CreateCondo onSuccess={() => fetchFullUserProfile(currentUser)} onBack={() => setCurrentView(AppView.DASHBOARD)} />}
-                {currentView === AppView.BILLING && <Billing condoData={condoData} onManagePlan={() => setCurrentView(AppView.PLANS)} />}
-                {currentView === AppView.ABOUT && <About />}
+                {currentView === AppView.BILLING && <Billing condoData={condoData} onManagePlan={() => setCurrentView(AppView.PLANS)} onBack={handleBackToServices} />}
+                {currentView === AppView.ABOUT && <About onBack={handleBackToServices} />}
               </>
             ) : (
               (currentView !== AppView.PLANS && currentView !== AppView.ABOUT) && (
