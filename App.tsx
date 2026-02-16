@@ -37,58 +37,63 @@ const App: React.FC = () => {
     currentPlan: PlanType.NONE
   });
 
-  // Verifica parâmetros de URL do Stripe
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
     if (query.get('success')) {
-      toast.success('Pagamento processado com sucesso! Sua assinatura será atualizada em instantes.');
-      // Limpa a URL
-      window.history.replaceState({}, document.title, "/");
-    }
-    if (query.get('canceled')) {
-      toast.error('O processo de pagamento foi cancelado.');
+      toast.success('Pagamento processado com sucesso!');
       window.history.replaceState({}, document.title, "/");
     }
   }, []);
 
+  const handleDemoLogin = (role: UserRole) => {
+    setIsLoggedIn(true);
+    setIsDemoMode(true);
+    const demoUser: User = {
+      id: 'demo-admin',
+      name: 'Administrador Demo',
+      photo: 'https://ui-avatars.com/api/?name=Admin&background=6366f1&color=fff',
+      role: role,
+      plan: PlanType.PREMIUM_AI
+    };
+    setCurrentUser(demoUser);
+    setCondoData({
+      name: 'Condomínio Demo',
+      cnpj: '00.000.000/0001-00',
+      adminName: 'Gestão Demo',
+      syndicName: 'Admin Demo',
+      staff: [],
+      subscriptionStatus: SubscriptionStatus.ACTIVE,
+      currentPlan: PlanType.PREMIUM_AI
+    });
+    setCurrentView(AppView.DASHBOARD);
+    toast.success('Entrou como Administrador de Teste');
+  };
+
   const fetchFullUserProfile = async (supabaseUser: any) => {
     if (!supabaseUser) return;
-
     try {
-      const { data: profile, error } = await supabase
+      const { data: profile } = await supabase
         .from('usuarios')
         .select('*, condominios(*)')
         .eq('id', supabaseUser.id)
         .maybeSingle();
 
-      if (error) console.warn("Erro ao buscar perfil:", error.message);
-
-      let finalProfile = profile;
-      if (!profile) {
-        const defaultName = supabaseUser.user_metadata?.full_name || supabaseUser.email?.split('@')[0] || 'Usuário';
-        const { data: newProfile } = await supabase
-          .from('usuarios')
-          .insert({ id: supabaseUser.id, nome: defaultName, tipo: 'sindico' })
-          .select().single();
-        finalProfile = newProfile;
-      }
-
-      const role = finalProfile?.tipo === 'sindico' ? UserRole.CONDO_ADMIN : UserRole.RESIDENT;
-      const condo = finalProfile?.condominios;
+      const role = profile?.tipo === 'sindico' ? UserRole.CONDO_ADMIN : UserRole.RESIDENT;
+      const condo = profile?.condominios;
       
       setCurrentUser({
         id: supabaseUser.id,
-        name: finalProfile?.nome || supabaseUser.email?.split('@')[0],
-        photo: `https://ui-avatars.com/api/?name=${encodeURIComponent(finalProfile?.nome || supabaseUser.email)}&background=6366f1&color=fff`,
+        name: profile?.nome || supabaseUser.email?.split('@')[0],
+        photo: `https://ui-avatars.com/api/?name=${encodeURIComponent(profile?.nome || supabaseUser.email)}&background=6366f1&color=fff`,
         role: role,
         plan: (condo?.plano_ativo as PlanType) || PlanType.NONE,
-        condominio_id: finalProfile?.condominio_id
+        condominio_id: profile?.condominio_id
       });
 
       setIsLoggedIn(true);
       setIsDemoMode(false);
 
-      if (role === UserRole.CONDO_ADMIN && !finalProfile?.condominio_id) {
+      if (role === UserRole.CONDO_ADMIN && !profile?.condominio_id) {
         setCurrentView(AppView.CREATE_CONDO);
       } else if (condo) {
         setCondoData({
@@ -96,18 +101,15 @@ const App: React.FC = () => {
           name: condo.nome,
           cnpj: condo.cnpj || '',
           adminName: '',
-          syndicName: finalProfile.nome,
+          syndicName: profile.nome,
           staff: [],
           subscriptionStatus: (condo.status_assinatura as SubscriptionStatus) || SubscriptionStatus.PENDING,
           currentPlan: (condo.plano_ativo as PlanType) || PlanType.NONE
         });
-
-        if (currentView === AppView.LOGIN || currentView === AppView.PLANS || currentView === AppView.CREATE_CONDO) {
-           setCurrentView(AppView.DASHBOARD);
-        }
+        setCurrentView(AppView.DASHBOARD);
       }
     } catch (err) {
-      console.error("Erro no fluxo de autenticação:", err);
+      console.error(err);
     }
   };
 
@@ -115,29 +117,27 @@ const App: React.FC = () => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) fetchFullUserProfile(session.user);
     });
-
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session?.user) {
-        fetchFullUserProfile(session.user);
-      } else {
+      if (session?.user) fetchFullUserProfile(session.user);
+      else if (event === 'SIGNED_OUT') {
         setIsLoggedIn(false);
         setCurrentUser(null);
       }
     });
-
     return () => subscription.unsubscribe();
   }, []);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    if (!isDemoMode) await supabase.auth.signOut();
     setIsLoggedIn(false);
     setCurrentUser(null);
+    setIsDemoMode(false);
     setCurrentView(AppView.PLANS);
     toast.success('Sessão encerrada.');
   };
 
   if (currentView === AppView.LOGIN) {
-    return <Login onDemoLogin={() => {}} onBackToHome={() => setCurrentView(AppView.PLANS)} />;
+    return <Login onDemoLogin={handleDemoLogin} onBackToHome={() => setCurrentView(AppView.PLANS)} />;
   }
 
   return (
@@ -171,7 +171,7 @@ const App: React.FC = () => {
                 onSelectPlan={() => setCurrentView(AppView.LOGIN)} 
                 currentPlan={condoData.currentPlan || PlanType.NONE} 
                 isLoggedIn={isLoggedIn}
-                isCondoAdmin={currentUser?.role === UserRole.CONDO_ADMIN}
+                isCondoAdmin={currentUser?.role === UserRole.CONDO_ADMIN || isDemoMode}
               />
             )}
 
