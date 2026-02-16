@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { CondoData, PlanType, SubscriptionStatus } from '../types';
 
@@ -9,9 +8,15 @@ interface BillingProps {
 
 const Billing: React.FC<BillingProps> = ({ condoData, onManagePlan }) => {
   const [history] = useState([
-    { id: '1', date: '25/10/2023', amount: 'R$ 399,00', status: 'Pago', method: 'Cartão •••• 4455' },
-    { id: '2', date: '25/09/2023', amount: 'R$ 399,00', status: 'Pago', method: 'Cartão •••• 4455' },
+    { id: '1', date: new Date().toLocaleDateString('pt-BR'), amount: 'R$ 399,00', status: 'Pago', method: 'Cartão •••• 4455' },
   ]);
+
+  // Calcula a próxima renovação (30 dias a partir de hoje)
+  const getNextRenewalDate = () => {
+    const date = new Date();
+    date.setDate(date.getDate() + 30);
+    return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+  };
 
   const getStatusColor = (status: SubscriptionStatus | undefined) => {
     switch (status) {
@@ -43,7 +48,7 @@ const Billing: React.FC<BillingProps> = ({ condoData, onManagePlan }) => {
                 {condoData.subscriptionStatus === SubscriptionStatus.ACTIVE ? 'Ativo' : 'Pendente'}
               </span>
             </div>
-            <p className="text-sm text-slate-500 font-medium">Sua próxima renovação será em <span className="font-bold text-slate-900">25 de Novembro, 2023</span>.</p>
+            <p className="text-sm text-slate-500 font-medium">Sua próxima renovação será em <span className="font-bold text-slate-900">{getNextRenewalDate()}</span>.</p>
             <button onClick={onManagePlan} className="text-indigo-600 text-[10px] font-black uppercase tracking-widest hover:underline pt-2">Alterar Plano de Assinatura</button>
           </div>
         </div>
