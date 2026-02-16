@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { supabase, isSupabaseConfigured } from '../../js/supabase';
 import { UserRole } from '../types';
@@ -18,6 +19,16 @@ const Login: React.FC<LoginProps> = ({ onDemoLogin, onBackToHome }) => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) return;
+
+    // Lógica de Admin de Demonstração
+    if (email.toLowerCase() === 'admin' && password === 'admin') {
+      setLoading(true);
+      setTimeout(() => {
+        onDemoLogin(UserRole.SUPER_ADMIN);
+        setLoading(false);
+      }, 800);
+      return;
+    }
 
     if (!isSupabaseConfigured()) {
       alert("Configuração do Supabase ausente.");
@@ -136,14 +147,14 @@ const Login: React.FC<LoginProps> = ({ onDemoLogin, onBackToHome }) => {
             )}
 
             <div className="space-y-1.5">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">E-mail</label>
+              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">{isRegistering ? 'E-mail' : 'Usuário ou E-mail'}</label>
               <input 
                 required
-                type="email" 
+                type="text" 
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-4 text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-indigo-600 focus:bg-white outline-none transition-all placeholder-slate-400"
-                placeholder="exemplo@email.com"
+                placeholder={isRegistering ? "exemplo@email.com" : "admin"}
               />
             </div>
 
@@ -195,6 +206,12 @@ const Login: React.FC<LoginProps> = ({ onDemoLogin, onBackToHome }) => {
               {isRegistering ? 'Já possui conta? Entrar' : 'Não tem conta? Cadastrar-se'}
             </button>
           </div>
+          
+          {!isRegistering && (
+            <div className="mt-4 p-4 bg-indigo-50 rounded-2xl border border-indigo-100">
+              <p className="text-[9px] font-black text-indigo-700 uppercase tracking-widest text-center">Dica: Use 'admin' / 'admin' para teste rápido</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
