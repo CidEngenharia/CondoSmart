@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState } from 'react';
-import { PlanType, UserRole } from '../types';
-import { supabase } from '../../js/supabase';
+import { PlanType, UserRole } from '@/services/types';
+import { supabase } from '@/js/supabase';
 import { createCheckoutSession } from '../stripeService';
-import { Check, Rocket, CreditCard, ShieldCheck } from 'lucide-react';
+import { Check, CreditCard, ShieldCheck } from 'lucide-react';
 
 interface PlansProps {
   onSelectPlan: (plan: PlanType) => void;
@@ -18,7 +18,7 @@ const PLANS = [
     type: PlanType.ESSENTIAL,
     name: 'Essencial',
     price: 'R$ 250',
-    priceId: 'price_essential_id', // ID do produto no Stripe
+    priceId: 'price_essential_id',
     description: 'Organização básica para condomínios pequenos.',
     features: ['Gestão de Encomendas', 'Reserva de Áreas', 'Comunicados Push', 'App Moradores'],
     color: 'bg-slate-50 text-slate-900',
@@ -67,7 +67,6 @@ const Plans: React.FC<PlansProps> = ({ onSelectPlan, currentPlan, isLoggedIn, is
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Sessão inválida.");
 
-      // Inicia checkout no Stripe
       const session = await createCheckoutSession(plan.priceId, user.email);
       
       if (session.url) {
