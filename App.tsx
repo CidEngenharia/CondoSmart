@@ -1,13 +1,12 @@
-
 import React, { useState, useEffect } from 'react';
 import { AppView, PlanType, User, UserRole, CondoData, Alert, SubscriptionStatus } from './services/types';
-import Sidebar from './components/Sidebar';
-import Header from './components/Header';
+import Sidebar from './src/components/Sidebar';
+import Header from './src/components/Header';
 import Dashboard from './services/views/Dashboard';
 import Services from './services/views/Services';
 import Concierge from './services/views/Concierge';
 import CreativeStudio from './services/views/CreativeStudio';
-import Plans from './services/views/Plans';
+import Plans from './src/services/views/Plans';
 import About from './services/views/About';
 import Residents from './services/views/Residents';
 import Vehicles from './services/views/Vehicles';
@@ -18,6 +17,8 @@ import Login from './services/views/Login';
 import CreateCondo from './services/views/CreateCondo';
 import Billing from './services/views/Billing';
 import { supabase } from './js/supabase';
+import ToastProvider from './src/components/ToastProvider';
+import toast from 'react-hot-toast';
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<AppView>(AppView.PLANS);
@@ -36,7 +37,19 @@ const App: React.FC = () => {
     currentPlan: PlanType.NONE
   });
 
-  const DEMO_EXPIRATION_MINUTES = 30;
+  // Verifica parâmetros de URL do Stripe
+  useEffect(() => {
+    const query = new URLSearchParams(window.location.search);
+    if (query.get('success')) {
+      toast.success('Pagamento processado com sucesso! Sua assinatura será atualizada em instantes.');
+      // Limpa a URL
+      window.history.replaceState({}, document.title, "/");
+    }
+    if (query.get('canceled')) {
+      toast.error('O processo de pagamento foi cancelado.');
+      window.history.replaceState({}, document.title, "/");
+    }
+  }, []);
 
   const fetchFullUserProfile = async (supabaseUser: any) => {
     if (!supabaseUser) return;
@@ -89,15 +102,8 @@ const App: React.FC = () => {
           currentPlan: (condo.plano_ativo as PlanType) || PlanType.NONE
         });
 
-        const isInactive = condo.status_assinatura !== 'active' && condo.status_assinatura !== 'trial';
-        if (role === UserRole.CONDO_ADMIN && isInactive && currentView !== AppView.CREATE_CONDO && currentView !== AppView.BILLING) {
-           setCurrentView(AppView.PLANS);
-        } else if (currentView === AppView.LOGIN || currentView === AppView.PLANS || currentView === AppView.CREATE_CONDO) {
+        if (currentView === AppView.LOGIN || currentView === AppView.PLANS || currentView === AppView.CREATE_CONDO) {
            setCurrentView(AppView.DASHBOARD);
-        }
-      } else {
-        if (currentView === AppView.LOGIN || currentView === AppView.PLANS) {
-          setCurrentView(AppView.DASHBOARD);
         }
       }
     } catch (err) {
@@ -106,21 +112,6 @@ const App: React.FC = () => {
   };
 
   useEffect(() => {
-    // Verificar expiração de demo
-    const demoExpiry = localStorage.getItem('condosmart_demo_expiry');
-    if (demoExpiry && Date.now() > parseInt(demoExpiry)) {
-      handleLogout();
-      alert("Sessão de demonstração expirada. Por favor, entre novamente.");
-      return;
-    }
-
-    // Tentar restaurar demo do storage se existir
-    const demoActive = localStorage.getItem('condosmart_demo_active');
-    if (demoActive === 'true' && demoExpiry) {
-      handleDemoLogin(UserRole.SUPER_ADMIN, false); // false para não resetar o timer
-      return;
-    }
-
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) fetchFullUserProfile(session.user);
     });
@@ -128,88 +119,30 @@ const App: React.FC = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session?.user) {
         fetchFullUserProfile(session.user);
-      } else if (!demoActive) {
+      } else {
         setIsLoggedIn(false);
         setCurrentUser(null);
-        setCondoData({ name: 'CondoSmart', cnpj: '', adminName: '', syndicName: '', staff: [], subscriptionStatus: SubscriptionStatus.PENDING, currentPlan: PlanType.NONE });
       }
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
-  // Timer de verificação de expiração periódica
-  useEffect(() => {
-    if (isDemoMode) {
-      const interval = setInterval(() => {
-        const expiry = localStorage.getItem('condosmart_demo_expiry');
-        if (expiry && Date.now() > parseInt(expiry)) {
-          handleLogout();
-          alert("Sua sessão de demonstração expirou.");
-        }
-      }, 10000);
-      return () => clearInterval(interval);
-    }
-  }, [isDemoMode]);
-
-  const handleDemoLogin = (role: UserRole, resetTimer: boolean = true) => {
-    setCurrentUser({
-      name: 'Admin Demonstração',
-      photo: `https://ui-avatars.com/api/?name=Admin&background=6366f1&color=fff`,
-      role: role,
-      plan: PlanType.PREMIUM_AI
-    });
-    setCondoData({ 
-      name: 'Condomínio de Demonstração', 
-      cnpj: '00.000.000/0001-99',
-      adminName: 'Cid Engenharia',
-      syndicName: 'Admin Demo',
-      staff: [
-        { id: '1', name: 'Zelador Exemplo', phone: '5571999999999', email: 'zelador@demo.com', role: 'Zelador' }
-      ],
-      subscriptionStatus: SubscriptionStatus.ACTIVE, 
-      currentPlan: PlanType.PREMIUM_AI 
-    });
-    
-    if (resetTimer) {
-      const expiry = Date.now() + (DEMO_EXPIRATION_MINUTES * 60 * 1000);
-      localStorage.setItem('condosmart_demo_expiry', expiry.toString());
-      localStorage.setItem('condosmart_demo_active', 'true');
-    }
-    
-    setIsDemoMode(true);
-    setIsLoggedIn(true);
-    setCurrentView(AppView.DASHBOARD);
-  };
-
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    localStorage.removeItem('condosmart_demo_expiry');
-    localStorage.removeItem('condosmart_demo_active');
-    setIsDemoMode(false);
     setIsLoggedIn(false);
     setCurrentUser(null);
     setCurrentView(AppView.PLANS);
-  };
-
-  const handleCondoCreated = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session?.user) await fetchFullUserProfile(session.user);
+    toast.success('Sessão encerrada.');
   };
 
   if (currentView === AppView.LOGIN) {
-    return <Login onDemoLogin={handleDemoLogin} onBackToHome={() => setCurrentView(AppView.PLANS)} />;
+    return <Login onDemoLogin={() => {}} onBackToHome={() => setCurrentView(AppView.PLANS)} />;
   }
 
-  const isBillingRestricted = isLoggedIn && 
-                              !isDemoMode &&
-                              currentUser?.role === UserRole.CONDO_ADMIN && 
-                              condoData.subscriptionStatus !== SubscriptionStatus.ACTIVE &&
-                              condoData.subscriptionStatus !== SubscriptionStatus.TRIAL &&
-                              currentView !== AppView.CREATE_CONDO;
-
   return (
-    <div className="relative h-screen bg-[#F8FAFC] overflow-hidden flex flex-col font-sans animate-fadeIn">
+    <div className="relative h-screen bg-[#F8FAFC] overflow-hidden flex flex-col font-sans">
+      <ToastProvider />
       <Sidebar 
         currentView={currentView} 
         onViewChange={setCurrentView} 
@@ -228,25 +161,9 @@ const App: React.FC = () => {
           onLogout={handleLogout}
           currentUser={currentUser}
           condoName={condoData.name}
-          condoLogo={condoData.logoUrl}
           isDemoMode={isDemoMode}
         />
         
-        {isDemoMode && (
-          <div className="bg-indigo-600 text-white px-6 py-2 flex items-center justify-center gap-3 animate-pulse">
-            <i className="fas fa-clock"></i>
-            <span className="text-[9px] font-black uppercase tracking-[0.2em]">Sessão de Demonstração Ativa - Expira em breve</span>
-          </div>
-        )}
-
-        {isBillingRestricted && currentView !== AppView.PLANS && currentView !== AppView.BILLING && (
-          <div className="bg-amber-500 text-white px-6 py-2 flex items-center justify-center gap-3 animate-slideDown">
-            <i className="fas fa-exclamation-triangle"></i>
-            <span className="text-[10px] font-black uppercase tracking-widest">Sua assinatura está pendente. Regularize para liberar todos os recursos.</span>
-            <button onClick={() => setCurrentView(AppView.PLANS)} className="bg-white text-amber-600 px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-amber-50 transition-all">Ver Planos</button>
-          </div>
-        )}
-
         <main className="flex-1 overflow-y-auto p-4 md:p-8">
           <div className="max-w-7xl mx-auto h-full pb-24 md:pb-8">
             {currentView === AppView.PLANS && (
@@ -254,11 +171,9 @@ const App: React.FC = () => {
                 onSelectPlan={() => setCurrentView(AppView.LOGIN)} 
                 currentPlan={condoData.currentPlan || PlanType.NONE} 
                 isLoggedIn={isLoggedIn}
-                isCondoAdmin={currentUser?.role === UserRole.CONDO_ADMIN || isDemoMode}
+                isCondoAdmin={currentUser?.role === UserRole.CONDO_ADMIN}
               />
             )}
-
-            {currentView === AppView.ABOUT && <About />}
 
             {isLoggedIn ? (
               <>
@@ -268,7 +183,6 @@ const App: React.FC = () => {
                     isLoggedIn={isLoggedIn} 
                     onLogin={() => {}} 
                     condoName={condoData.name}
-                    condoLogo={condoData.logoUrl}
                     alerts={alerts}
                     isBillingActive={condoData.subscriptionStatus === SubscriptionStatus.ACTIVE || condoData.subscriptionStatus === SubscriptionStatus.TRIAL}
                   />
@@ -281,8 +195,9 @@ const App: React.FC = () => {
                 {currentView === AppView.PATRIMONY && <Patrimony condoData={condoData} setCondoData={setCondoData} isAdmin={currentUser?.role !== UserRole.RESIDENT} />}
                 {currentView === AppView.CONCIERGE && <Concierge />}
                 {currentView === AppView.CREATIVE && <CreativeStudio onAddAlert={(a: any) => setAlerts(p => [a, ...p])} />}
-                {currentView === AppView.CREATE_CONDO && <CreateCondo onSuccess={handleCondoCreated} onBack={() => setCurrentView(AppView.DASHBOARD)} />}
+                {currentView === AppView.CREATE_CONDO && <CreateCondo onSuccess={() => fetchFullUserProfile(currentUser)} onBack={() => setCurrentView(AppView.DASHBOARD)} />}
                 {currentView === AppView.BILLING && <Billing condoData={condoData} onManagePlan={() => setCurrentView(AppView.PLANS)} />}
+                {currentView === AppView.ABOUT && <About />}
               </>
             ) : (
               (currentView !== AppView.PLANS && currentView !== AppView.ABOUT) && (
@@ -290,11 +205,8 @@ const App: React.FC = () => {
                    <div className="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-3xl flex items-center justify-center text-3xl">
                       <i className="fas fa-lock"></i>
                    </div>
-                   <div>
-                      <h2 className="text-2xl font-black text-slate-900 uppercase">Acesso Restrito</h2>
-                      <p className="text-slate-500 max-w-xs mx-auto mt-2">Conecte-se para gerenciar sua unidade ou condomínio.</p>
-                   </div>
-                   <button onClick={() => setCurrentView(AppView.LOGIN)} className="px-8 py-4 bg-indigo-600 text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl shadow-indigo-100">Entrar agora</button>
+                   <h2 className="text-2xl font-black text-slate-900 uppercase">Acesso Restrito</h2>
+                   <button onClick={() => setCurrentView(AppView.LOGIN)} className="px-8 py-4 bg-indigo-600 text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl">Entrar agora</button>
                 </div>
               )
             )}
