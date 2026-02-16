@@ -30,6 +30,7 @@ const PLANS = [
     name: 'Profissional',
     price: 'R$ 300',
     priceId: 'price_professional_id',
+    directLink: 'https://buy.stripe.com/00w3co6KHd7C9TI25Yf3a01',
     description: 'Gestão completa com ferramentas financeiras.',
     features: ['Tudo do Essencial', 'Assembleia Virtual', 'Boletos Automáticos', 'Relatórios Mensais'],
     color: 'bg-indigo-600 text-white',
@@ -52,7 +53,7 @@ const Plans: React.FC<PlansProps> = ({ onSelectPlan, currentPlan, isLoggedIn, is
   const [loading, setLoading] = useState<PlanType | null>(null);
 
   const handlePlanAction = async (plan: any) => {
-    // Se houver um link direto (como o do plano Essencial), redireciona imediatamente
+    // Se houver um link direto (como o do plano Essencial ou Profissional), redireciona imediatamente
     if (plan.directLink) {
       window.location.href = plan.directLink;
       return;
