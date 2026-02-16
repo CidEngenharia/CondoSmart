@@ -41,9 +41,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, onViewChange, isOpen, on
         <div className="flex flex-col h-full p-6">
           <div className="flex items-center justify-between mb-10">
             <div className="flex items-center gap-3">
-              <div className="bg-indigo-600 p-2 rounded-lg text-white">
-                <Building2 size={20} />
-              </div>
+              <img src="/logo-icon.jpg" alt="Logo" className="w-8 h-8 rounded-lg object-cover shadow-sm" />
               <span className="font-black text-xl tracking-tighter">CondoSmarTI</span>
             </div>
             <button onClick={onToggle} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
