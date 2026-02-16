@@ -46,26 +46,26 @@ const About: React.FC<AboutProps> = ({ onBack }) => {
         <div className="relative z-10 flex flex-col sm:flex-row items-center sm:items-start gap-6">
           <div className="w-20 h-20 rounded-full border-2 border-indigo-500/50 overflow-hidden shrink-0 shadow-lg bg-white">
              <img 
-               src="/LOGO1.fw.png" 
+               src="/logo-icon.jpg" 
                className="w-full h-full object-contain" 
-               alt="CidEngenharia360 Logo" 
+               alt="CidEngenharia Logo" 
              />
           </div>
           <div className="space-y-4 text-center sm:text-left flex-1">
             <div>
-              <h3 className="text-sm font-black text-black">Desenvolvido por CidEngenharia360 - by Sidney Sales</h3>
+              <h3 className="text-sm font-black text-black">Developer CidEngenharia - Sidney Sales</h3>
               <p className="text-xs text-gray-800 font-bold mt-1">
                 Desenvolvedor Especialista em desenvolvimento de aplicações de alta performance com IA e Web3.
               </p>
             </div>
             <div className="flex flex-wrap justify-center sm:justify-start gap-3">
               <a 
-                href="https://cidengenharia360.vercel.app" 
+                href="https://cidengenharia.vercel.app/" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="px-4 py-2 bg-white/50 text-black border border-black/20 rounded-lg text-xs font-bold hover:bg-white/70 transition-all flex items-center gap-2"
               >
-                Cidengenharia360° <i className="fas fa-external-link-alt text-[10px] opacity-70"></i>
+                Cidengenharia <i className="fas fa-external-link-alt text-[10px] opacity-70"></i>
               </a>
               <a 
                 href="https://wa.me/5571984184782?text=gostaria%20de%20um%20or%C3%A7amento%20de%20uma%20aplica%C3%A7%C3%A3o%20personalizada" 
