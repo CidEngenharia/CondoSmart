@@ -42,6 +42,7 @@ const PLANS = [
     name: 'Premium AI',
     price: 'R$ 399',
     priceId: 'price_premium_id',
+    directLink: 'https://buy.stripe.com/28EaEQ3yv5Fa7LAcKCf3a02',
     description: 'Vanguarda tecnológica com IA completa.',
     features: ['Tudo do Profissional', 'Portaria IA 24h', 'Biometria Facial', 'Busca de Voz Gemini'],
     color: 'bg-slate-900 text-white',
@@ -53,7 +54,7 @@ const Plans: React.FC<PlansProps> = ({ onSelectPlan, currentPlan, isLoggedIn, is
   const [loading, setLoading] = useState<PlanType | null>(null);
 
   const handlePlanAction = async (plan: any) => {
-    // Se houver um link direto (como o do plano Essencial ou Profissional), redireciona imediatamente
+    // Se houver um link direto (como o do plano Essencial, Profissional ou Premium AI), redireciona imediatamente
     if (plan.directLink) {
       window.location.href = plan.directLink;
       return;
