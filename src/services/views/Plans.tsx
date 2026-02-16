@@ -19,6 +19,7 @@ const PLANS = [
     name: 'Essencial',
     price: 'R$ 250',
     priceId: 'price_essential_id',
+    directLink: 'https://buy.stripe.com/28EfZad956Je2rgaCuf3a00',
     description: 'Organização básica para condomínios pequenos.',
     features: ['Gestão de Encomendas', 'Reserva de Áreas', 'Comunicados Push', 'App Moradores'],
     color: 'bg-slate-50 text-slate-900',
@@ -51,6 +52,12 @@ const Plans: React.FC<PlansProps> = ({ onSelectPlan, currentPlan, isLoggedIn, is
   const [loading, setLoading] = useState<PlanType | null>(null);
 
   const handlePlanAction = async (plan: any) => {
+    // Se houver um link direto (como o do plano Essencial), redireciona imediatamente
+    if (plan.directLink) {
+      window.location.href = plan.directLink;
+      return;
+    }
+
     if (!isLoggedIn) {
       onSelectPlan(plan.type);
       return;
