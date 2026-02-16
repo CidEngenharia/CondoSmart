@@ -30,10 +30,12 @@ const About: React.FC = () => {
 
       <section className="bg-gray-300 rounded-[2rem] p-8 text-black shadow-xl relative overflow-hidden">
         <div className="relative z-10 flex flex-col sm:flex-row items-center sm:items-start gap-6">
-          <div className="w-20 h-20 rounded-full border-2 border-indigo-500/50 overflow-hidden shrink-0 shadow-lg bg-gray-400">
-             <img src="https://storage.googleapis.com/demos_ai/sidney_sales_avatar.png" className="w-full h-full object-cover object-top" alt="Sidney Sales" onError={(e) => {
-               e.currentTarget.src = "https://i.pravatar.cc/150?u=sidney_new";
-             }} />
+          <div className="w-20 h-20 rounded-full border-2 border-indigo-500/50 overflow-hidden shrink-0 shadow-lg bg-white">
+             <img 
+               src="/LOGO1.fw.png" 
+               className="w-full h-full object-contain" 
+               alt="CidEngenharia360 Logo" 
+             />
           </div>
           <div className="space-y-4 text-center sm:text-left flex-1">
             <div>
