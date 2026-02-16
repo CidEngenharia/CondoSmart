@@ -44,7 +44,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, onViewChange, isOpen, on
               <div className="bg-indigo-600 p-2 rounded-lg text-white">
                 <Building2 size={20} />
               </div>
-              <span className="font-black text-xl tracking-tighter">CondoSmart</span>
+              <span className="font-black text-xl tracking-tighter">CondoSmarTI</span>
             </div>
             <button onClick={onToggle} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
               <X size={24} className="text-slate-500" />

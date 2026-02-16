@@ -7,23 +7,23 @@ const About: React.FC = () => {
         <div className="w-20 h-20 bg-indigo-600 rounded-2xl flex items-center justify-center text-white text-3xl mx-auto shadow-xl shadow-indigo-100">
           <i className="fas fa-city"></i>
         </div>
-        <h2 className="text-3xl font-black text-gray-900 tracking-tight">O que é o CondoSmart?</h2>
+        <h2 className="text-3xl font-black text-gray-900 tracking-tight">O que é o CondoSmarTI?</h2>
         <p className="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
-          Uma plataforma de vanguarda que une a gestão condominial tradicional à potência da Inteligência Artificial.
+          O sistema que trabalha por você e pelos moradores de condomínio. Simplifique sua rotina, tenha maior controle na comunicação e na gestão em um único sistema, para múltiplos condomínios.
         </p>
       </section>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 space-y-4">
-          <h3 className="text-lg font-bold text-indigo-600">Como Funciona?</h3>
+          <h3 className="text-lg font-bold text-indigo-600">Gestão Simplificada</h3>
           <p className="text-sm text-gray-600 leading-relaxed">
-            O CondoSmart centraliza toda a comunicação, segurança e finanças em um único dashboard intuitivo. Utilizando modelos avançados de IA (Gemini), automatizamos desde o atendimento na portaria até a geração de comunicados e artes visuais.
+            Personalize a área administrativa do seu condomínio com as informações dos seus colaboradores. Aqui o morador tem mais facilidade e transparência na Gestão do condomínio.
           </p>
         </div>
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 space-y-4">
-          <h3 className="text-lg font-bold text-indigo-600">Para quem serve?</h3>
+          <h3 className="text-lg font-bold text-indigo-600">Tour Gratuito</h3>
           <p className="text-sm text-gray-600 leading-relaxed">
-            Ideal para Síndicos, Administradoras de Condomínios e Moradores que buscam agilidade, transparência e redução de custos operacionais através da tecnologia de ponta.
+            Faça um tour gratuito pelo nosso Sistema e conheça o CondoSmarTI. Descubra como a Inteligência Artificial pode transformar a convivência e a administração do seu espaço.
           </p>
         </div>
       </div>

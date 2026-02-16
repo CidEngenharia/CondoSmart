@@ -26,7 +26,7 @@ const Header: React.FC<HeaderProps> = ({ currentView, isLoggedIn, onLogin, onLog
       case AppView.RESIDENTS: return 'Moradores';
       case AppView.PATRIMONY: return 'Patrimônio';
       case AppView.BILLING: return 'Faturamento';
-      default: return 'CondoSmart';
+      default: return 'CondoSmarTI';
     }
   };
 
@@ -41,13 +41,13 @@ const Header: React.FC<HeaderProps> = ({ currentView, isLoggedIn, onLogin, onLog
         </button>
         <div className="hidden sm:flex items-center gap-2">
           <Building2 size={20} className="text-indigo-600" />
-          <h1 className="font-black text-xl tracking-tighter">CondoSmart</h1>
+          <h1 className="font-black text-xl tracking-tighter">CondoSmarTI</h1>
         </div>
       </div>
       
       <div className="text-center">
         <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] block leading-none mb-1">
-          {isDemoMode ? 'Modo Demonstração' : (condoName || 'CondoSmart AI')}
+          {isDemoMode ? 'Modo Demonstração' : (condoName || 'CondoSmarTI')}
         </span>
         <span className="text-sm font-bold text-indigo-600 uppercase tracking-widest">{getTitle()}</span>
       </div>
