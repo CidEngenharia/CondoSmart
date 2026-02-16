@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { AppView, User } from '../services/types';
+import { AppView, User } from '@/services/types';
 import { Menu, LogOut, Building2 } from 'lucide-react';
 
 interface HeaderProps {

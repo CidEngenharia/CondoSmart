@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { AppView, PlanType, User, UserRole } from '../services/types';
+import { AppView, PlanType, User, UserRole } from '@/services/types';
 import { X, LayoutDashboard, Briefcase, Users, Building2, ShieldCheck, CreditCard, Info, LogIn } from 'lucide-react';
 
 interface SidebarProps {
