@@ -1,4 +1,4 @@
-import { supabase } from "./supabase.js";
+import { supabase } from "./js/supabase.js";
 
 /**
  * Função para verificar o vínculo do usuário com um condomínio
