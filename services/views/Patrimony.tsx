@@ -1,14 +1,15 @@
-
 import React, { useState } from 'react';
 import { CondoData } from '../types';
+import { ArrowLeft } from 'lucide-react';
 
 interface PatrimonyProps {
   condoData: CondoData;
   setCondoData: (data: CondoData) => void;
   isAdmin: boolean;
+  onBack?: () => void;
 }
 
-const Patrimony: React.FC<PatrimonyProps> = ({ condoData, setCondoData, isAdmin }) => {
+const Patrimony: React.FC<PatrimonyProps> = ({ condoData, setCondoData, isAdmin, onBack }) => {
   const [editingGeneral, setEditingGeneral] = useState(false);
   const [isStaffModalOpen, setIsStaffModalOpen] = useState(false);
   const [editingStaffId, setEditingStaffId] = useState<string | null>(null);
@@ -66,6 +67,15 @@ const Patrimony: React.FC<PatrimonyProps> = ({ condoData, setCondoData, isAdmin 
 
   return (
     <div className="max-w-5xl mx-auto space-y-10 animate-fadeIn py-6 pb-20">
+      {onBack && (
+        <button 
+          onClick={onBack}
+          className="flex items-center gap-2 text-slate-400 hover:text-indigo-600 transition-colors text-[10px] font-black uppercase tracking-widest mb-4"
+        >
+          <ArrowLeft size={14} /> Voltar para Central
+        </button>
+      )}
+
       {/* Header & General Data */}
       <div className="bg-white rounded-[2.5rem] p-8 md:p-12 border border-slate-100 shadow-sm relative overflow-hidden group">
         <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full -mr-32 -mt-32 blur-[80px] opacity-60"></div>

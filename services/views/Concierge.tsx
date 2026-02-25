@@ -1,9 +1,13 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { chatWithGemini, getLocalInfoWithMaps, complexReasoning } from '../geminiService';
 import LiveVoice from '../../components/LiveVoice';
+import { ArrowLeft } from 'lucide-react';
 
-const Concierge: React.FC = () => {
+interface ConciergeProps {
+  onBack?: () => void;
+}
+
+const Concierge: React.FC<ConciergeProps> = ({ onBack }) => {
   const [messages, setMessages] = useState<{ role: 'user' | 'model', text: string, sources?: string[] }[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -50,6 +54,15 @@ const Concierge: React.FC = () => {
 
   return (
     <div className="h-full flex flex-col gap-6">
+      {onBack && (
+        <button 
+          onClick={onBack}
+          className="flex items-center gap-2 text-slate-400 hover:text-indigo-600 transition-colors text-[10px] font-black uppercase tracking-widest"
+        >
+          <ArrowLeft size={14} /> Voltar para Central
+        </button>
+      )}
+
       <div className="flex justify-between items-center bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center">

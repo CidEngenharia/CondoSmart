@@ -1,5 +1,5 @@
 {
-  "name": "CondoSmart AI",
+  "name": "CondoSmarTI",
   "description": "A high-end condominium management application with integrated AI for services, voice concierge, and creative tools.",
   "requestFramePermissions": [
     "camera",

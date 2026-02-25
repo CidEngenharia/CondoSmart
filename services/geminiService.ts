@@ -1,4 +1,3 @@
-
 import { GoogleGenAI, Type, Modality, GenerateContentResponse } from "@google/genai";
 
 const getAI = () => new GoogleGenAI({ apiKey: process.env.API_KEY });
@@ -8,7 +7,7 @@ export const chatWithGemini = async (message: string, history: { role: 'user' | 
   const chat = ai.chats.create({
     model: 'gemini-3-pro-preview',
     config: {
-      systemInstruction: 'You are an intelligent assistant for a luxury condominium called "CondoSmart". Help residents with facility bookings, rules, service requests, and general local information. Use a professional and welcoming tone.',
+      systemInstruction: 'You are an intelligent assistant for a luxury condominium called "CondoSmarTI". Help residents with facility bookings, rules, service requests, and general local information. Use a professional and welcoming tone.',
     },
   });
   

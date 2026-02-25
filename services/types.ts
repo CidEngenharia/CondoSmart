@@ -1,5 +1,5 @@
-
 export enum AppView {
+  LANDING = 'LANDING',
   DASHBOARD = 'DASHBOARD',
   SERVICES = 'SERVICES',
   CONCIERGE = 'CONCIERGE',
