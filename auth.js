@@ -29,10 +29,10 @@ async function verificarCondominio() {
   }
 }
 
-window.login = async function() {
+window.login = async function () {
   const emailInput = document.getElementById("email");
   const senhaInput = document.getElementById("senha");
-  
+
   const email = emailInput.value;
   const senha = senhaInput.value;
 
@@ -49,11 +49,12 @@ window.login = async function() {
   if (error) {
     alert("Erro no login: " + error.message);
   } else {
+    alert("✅ Bem-vindo de volta! Login realizado com sucesso.");
     await verificarCondominio();
   }
 };
 
-window.register = async function() {
+window.register = async function () {
   const nome = document.getElementById("nome").value;
   const email = document.getElementById("email").value;
   const senha = document.getElementById("senha").value;
@@ -77,12 +78,12 @@ window.register = async function() {
     });
 
     if (error) {
-        if (error.message.toLowerCase().includes("already registered") || error.status === 400) {
-            alert("Este e-mail já está cadastrado. Tente fazer login.");
-            window.location.href = "index.html";
-            return;
-        }
-        throw error;
+      if (error.message.toLowerCase().includes("already registered") || error.status === 400) {
+        alert("Este e-mail já está cadastrado. Tente fazer login.");
+        window.location.href = "index.html";
+        return;
+      }
+      throw error;
     }
 
     if (data.user) {
@@ -94,7 +95,7 @@ window.register = async function() {
 
       if (dbError) console.error("Erro ao salvar perfil no banco:", dbError);
 
-      alert("Conta criada com sucesso! Verifique seu e-mail para confirmar a conta.");
+      alert("✅ Conta criada com sucesso! Se você não foi logado automaticamente, verifique seu e-mail para confirmar a conta.");
       window.location.href = "index.html";
     }
   } catch (err) {
@@ -102,7 +103,7 @@ window.register = async function() {
   }
 };
 
-window.logout = async function() {
+window.logout = async function () {
   await supabase.auth.signOut();
   window.location.href = "index.html";
 };

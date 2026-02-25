@@ -37,13 +37,15 @@ const Login: React.FC<LoginProps> = ({ onDemoLogin, onBackToHome }) => {
 
     setLoading(true);
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({ 
-        email: email.trim(), 
-        password: password.trim() 
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password: password.trim()
       });
 
       if (error) throw error;
       if (!data.session) throw new Error("Falha ao iniciar sessão.");
+
+      alert("✅ Bem-vindo de volta! Login realizado com sucesso.");
     } catch (err: any) {
       console.error("Login Error:", err);
       alert("Erro ao entrar: " + (err.message || "Verifique suas credenciais."));
@@ -54,7 +56,7 @@ const Login: React.FC<LoginProps> = ({ onDemoLogin, onBackToHome }) => {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!name || !email || !password) {
       alert("Por favor, preencha todos os campos.");
       return;
@@ -62,8 +64,8 @@ const Login: React.FC<LoginProps> = ({ onDemoLogin, onBackToHome }) => {
 
     setLoading(true);
     try {
-      const { data, error: signUpError } = await supabase.auth.signUp({ 
-        email: email.trim(), 
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email: email.trim(),
         password: password.trim(),
         options: {
           data: {
@@ -85,10 +87,10 @@ const Login: React.FC<LoginProps> = ({ onDemoLogin, onBackToHome }) => {
       if (data.user) {
         const { error: profileError } = await supabase
           .from("usuarios")
-          .upsert({ 
-            id: data.user.id, 
-            nome: name.trim(), 
-            tipo: role 
+          .upsert({
+            id: data.user.id,
+            nome: name.trim(),
+            tipo: role
           });
 
         if (profileError) console.error("Erro ao criar perfil:", profileError);
@@ -96,6 +98,8 @@ const Login: React.FC<LoginProps> = ({ onDemoLogin, onBackToHome }) => {
         if (!data.session) {
           alert("✅ Cadastro realizado! Por favor, verifique seu e-mail para confirmar a conta.");
           setIsRegistering(false);
+        } else {
+          alert("✅ Bem-vindo ao CondoSmart! Seu cadastro foi realizado com sucesso.");
         }
       }
     } catch (err: any) {
@@ -109,7 +113,7 @@ const Login: React.FC<LoginProps> = ({ onDemoLogin, onBackToHome }) => {
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-6 font-sans">
       <div className="w-full max-w-md animate-fadeIn">
-        
+
         <div className="flex flex-col items-center mb-10">
           <div className="bg-indigo-600 p-4 rounded-2xl shadow-lg shadow-indigo-100 mb-4">
             <i className="fas fa-city text-white text-2xl"></i>
@@ -119,8 +123,8 @@ const Login: React.FC<LoginProps> = ({ onDemoLogin, onBackToHome }) => {
         </div>
 
         <div className="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-200 p-8 md:p-10">
-          
-          <button 
+
+          <button
             onClick={onBackToHome}
             className="text-slate-400 hover:text-indigo-600 mb-8 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest transition-colors"
           >
@@ -135,9 +139,9 @@ const Login: React.FC<LoginProps> = ({ onDemoLogin, onBackToHome }) => {
             {isRegistering && (
               <div className="space-y-1.5">
                 <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Nome Completo</label>
-                <input 
+                <input
                   required
-                  type="text" 
+                  type="text"
                   value={name}
                   onChange={e => setName(e.target.value)}
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-4 text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-indigo-600 focus:bg-white outline-none transition-all placeholder-slate-400"
@@ -148,9 +152,9 @@ const Login: React.FC<LoginProps> = ({ onDemoLogin, onBackToHome }) => {
 
             <div className="space-y-1.5">
               <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">{isRegistering ? 'E-mail' : 'Usuário ou E-mail'}</label>
-              <input 
+              <input
                 required
-                type="text" 
+                type="text"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-4 text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-indigo-600 focus:bg-white outline-none transition-all placeholder-slate-400"
@@ -160,9 +164,9 @@ const Login: React.FC<LoginProps> = ({ onDemoLogin, onBackToHome }) => {
 
             <div className="space-y-1.5">
               <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Senha</label>
-              <input 
+              <input
                 required
-                type="password" 
+                type="password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-4 text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-indigo-600 focus:bg-white outline-none transition-all placeholder-slate-400"
@@ -173,7 +177,7 @@ const Login: React.FC<LoginProps> = ({ onDemoLogin, onBackToHome }) => {
             {isRegistering && (
               <div className="space-y-1.5">
                 <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Tipo de Acesso</label>
-                <select 
+                <select
                   value={role}
                   onChange={e => setRole(e.target.value)}
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-4 text-sm font-bold text-slate-900 outline-none focus:ring-2 focus:ring-indigo-600 cursor-pointer"
@@ -184,7 +188,7 @@ const Login: React.FC<LoginProps> = ({ onDemoLogin, onBackToHome }) => {
               </div>
             )}
 
-            <button 
+            <button
               type="submit"
               disabled={loading}
               className="w-full py-4 bg-slate-900 text-white rounded-xl font-black uppercase text-xs tracking-widest shadow-lg hover:bg-indigo-600 active:scale-[0.98] transition-all disabled:opacity-50 mt-4 flex items-center justify-center gap-3"
@@ -199,14 +203,14 @@ const Login: React.FC<LoginProps> = ({ onDemoLogin, onBackToHome }) => {
           </form>
 
           <div className="mt-8 pt-6 border-t border-slate-100 text-center">
-            <button 
+            <button
               onClick={() => setIsRegistering(!isRegistering)}
               className="text-indigo-600 text-[10px] font-black uppercase tracking-widest hover:underline"
             >
               {isRegistering ? 'Já possui conta? Entrar' : 'Não tem conta? Cadastrar-se'}
             </button>
           </div>
-          
+
           {!isRegistering && (
             <div className="mt-4 p-4 bg-indigo-50 rounded-2xl border border-indigo-100">
               <p className="text-[9px] font-black text-indigo-700 uppercase tracking-widest text-center">Dica: Use 'admin' / 'admin' para teste rápido</p>
