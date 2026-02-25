@@ -24,23 +24,23 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStart, onLogin }) => {
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-600 text-xs font-black uppercase tracking-widest animate-fadeIn">
               <Zap size={14} /> A Revolução na Gestão Condominial
             </div>
-            
+
             <h1 className="text-5xl md:text-7xl font-black tracking-tighter leading-[1.1] text-slate-900 animate-slideUp">
               O Futuro do seu Condomínio é <span className="text-indigo-600 italic">Inteligente.</span>
             </h1>
-            
+
             <p className="text-lg md:text-xl text-slate-500 font-medium max-w-2xl mx-auto leading-relaxed animate-slideUp [animation-delay:200ms]">
               Simplifique a rotina, aumente a segurança e transforme a convivência com a primeira plataforma de gestão movida por Inteligência Artificial.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 animate-slideUp [animation-delay:400ms]">
-              <button 
+              <button
                 onClick={onStart}
                 className="w-full sm:w-auto px-10 py-5 bg-indigo-600 text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-2xl shadow-indigo-200 hover:bg-indigo-700 hover:scale-105 transition-all active:scale-95 flex items-center justify-center gap-2"
               >
                 Começar Agora <ArrowRight size={16} />
               </button>
-              <button 
+              <button
                 onClick={onLogin}
                 className="w-full sm:w-auto px-10 py-5 bg-white text-slate-900 border border-slate-200 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-slate-50 transition-all"
               >
@@ -53,17 +53,17 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStart, onLogin }) => {
           <div className="mt-20 relative animate-fadeIn [animation-delay:600ms]">
             <div className="bg-slate-900 rounded-[2.5rem] p-4 shadow-[0_50px_100px_-20px_rgba(15,23,42,0.3)] border border-slate-800">
               <div className="bg-slate-800 rounded-[1.8rem] overflow-hidden aspect-video relative">
-                <img 
-                  src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=1200" 
-                  alt="Dashboard Preview" 
-                  className="w-full h-full object-cover opacity-60"
+                <img
+                  src="/images/landing-hero.jpg"
+                  alt="Dashboard Preview"
+                  className="w-full h-full object-cover opacity-80"
                 />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="bg-white/10 backdrop-blur-xl p-8 rounded-[2rem] border border-white/10 text-center space-y-4">
                     <div className="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center text-white text-2xl mx-auto shadow-xl">
                       <Shield size={32} />
                     </div>
-                    <p className="text-white font-black uppercase tracking-widest text-sm">Interface de Alta Performance</p>
+                    <p className="text-white font-black uppercase tracking-widest text-sm">Seja bem Vindo!</p>
                   </div>
                 </div>
               </div>
@@ -81,32 +81,32 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStart, onLogin }) => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <FeatureCard 
+            <FeatureCard
               icon={<MessageSquare className="text-indigo-600" />}
               title="Portaria IA 24h"
               desc="Atendimento inteligente por voz e chat para visitantes e moradores, integrado ao Google Gemini."
             />
-            <FeatureCard 
+            <FeatureCard
               icon={<Smartphone className="text-indigo-600" />}
               title="App do Morador"
               desc="Reservas, comunicados, boletos e encomendas na palma da mão com interface intuitiva."
             />
-            <FeatureCard 
+            <FeatureCard
               icon={<Shield className="text-indigo-600" />}
               title="Segurança Avançada"
               desc="Controle de acesso por QR Code, biometria facial e registro completo de veículos."
             />
-            <FeatureCard 
+            <FeatureCard
               icon={<BarChart3 className="text-indigo-600" />}
               title="Gestão Financeira"
               desc="Emissão de boletos, controle de inadimplência e relatórios detalhados em tempo real."
             />
-            <FeatureCard 
+            <FeatureCard
               icon={<Users className="text-indigo-600" />}
               title="Assembleia Virtual"
               desc="Realize votações e assembleias de forma digital com validade jurídica e transparência."
             />
-            <FeatureCard 
+            <FeatureCard
               icon={<Zap className="text-indigo-600" />}
               title="Estúdio Criativo"
               desc="Gere comunicados e artes profissionais para o condomínio usando nossa IA generativa."
@@ -132,17 +132,17 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStart, onLogin }) => {
         <div className="max-w-5xl mx-auto px-6">
           <div className="bg-indigo-600 rounded-[4rem] p-12 md:p-20 text-white text-center space-y-10 relative overflow-hidden shadow-2xl shadow-indigo-200">
             <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full -mr-48 -mt-48 blur-3xl"></div>
-            
+
             <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-tight relative z-10">
               Pronto para transformar seu condomínio?
             </h2>
-            
+
             <p className="text-indigo-100 text-lg font-medium max-w-2xl mx-auto relative z-10">
               Junte-se a centenas de condomínios que já utilizam o CondoSmarTI para uma gestão mais eficiente e segura.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6 relative z-10">
-              <button 
+              <button
                 onClick={onStart}
                 className="w-full sm:w-auto px-12 py-6 bg-white text-indigo-600 rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl hover:scale-105 transition-all active:scale-95"
               >
