@@ -11,9 +11,10 @@ interface HeaderProps {
   currentUser: User | null;
   condoName?: string;
   condoLogo?: string;
+  isDemoMode?: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ currentView, isLoggedIn, onLogin, onLogout, onMenuToggle, currentUser, condoName, condoLogo }) => {
+const Header: React.FC<HeaderProps> = ({ currentView, isLoggedIn, onLogin, onLogout, onMenuToggle, currentUser, condoName, condoLogo, isDemoMode }) => {
   const getTitle = () => {
     switch (currentView) {
       case AppView.DASHBOARD: return 'Painel';
@@ -44,9 +45,15 @@ const Header: React.FC<HeaderProps> = ({ currentView, isLoggedIn, onLogin, onLog
           </h1>
         </div>
         <div className="flex items-center gap-2 mt-0.5">
-          <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] animate-fadeIn">
-            {condoName || 'Defina o nome no Patrimônio'}
-          </span>
+          {isDemoMode ? (
+            <span className="text-[9px] font-black bg-rose-600 text-white px-2 py-0.5 rounded uppercase tracking-[0.2em] animate-pulse shadow-sm">
+              MODO DEMONSTRAÇÃO
+            </span>
+          ) : (
+            <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] animate-fadeIn">
+              {condoName || 'Defina o nome no Patrimônio'}
+            </span>
+          )}
           <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
           <span className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">{getTitle()}</span>
         </div>
@@ -67,7 +74,7 @@ const Header: React.FC<HeaderProps> = ({ currentView, isLoggedIn, onLogin, onLog
               <img src={currentUser?.photo} className="w-10 h-10 rounded-full border-2 border-white shadow-md" alt="Profile" />
               <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></div>
             </div>
-            <button onClick={onLogout} className="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors rounded-xl hover:bg-red-50">
+            <button onClick={onLogout} title="Sair da sessão" className="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors rounded-xl hover:bg-red-50">
               <i className="fas fa-sign-out-alt"></i>
             </button>
           </div>

@@ -25,6 +25,7 @@ const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [alerts, setAlerts] = useState<Alert[]>([]);
+  const [isDemoMode, setIsDemoMode] = useState(false);
   const [condoData, setCondoData] = useState<CondoData>({
     name: 'CondoSmart',
     cnpj: '',
@@ -34,6 +35,8 @@ const App: React.FC = () => {
     subscriptionStatus: SubscriptionStatus.PENDING,
     currentPlan: PlanType.NONE
   });
+
+  const DEMO_EXPIRATION_MINUTES = 30;
 
   const fetchFullUserProfile = async (supabaseUser: any) => {
     if (!supabaseUser) return;
@@ -70,6 +73,7 @@ const App: React.FC = () => {
       });
 
       setIsLoggedIn(true);
+      setIsDemoMode(false);
 
       if (role === UserRole.CONDO_ADMIN && !finalProfile?.condominio_id) {
         setCurrentView(AppView.CREATE_CONDO);
@@ -102,6 +106,21 @@ const App: React.FC = () => {
   };
 
   useEffect(() => {
+    // Verificar expiração de demo
+    const demoExpiry = localStorage.getItem('condosmart_demo_expiry');
+    if (demoExpiry && Date.now() > parseInt(demoExpiry)) {
+      handleLogout();
+      alert("Sessão de demonstração expirada. Por favor, entre novamente.");
+      return;
+    }
+
+    // Tentar restaurar demo do storage se existir
+    const demoActive = localStorage.getItem('condosmart_demo_active');
+    if (demoActive === 'true' && demoExpiry) {
+      handleDemoLogin(UserRole.SUPER_ADMIN, false); // false para não resetar o timer
+      return;
+    }
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) fetchFullUserProfile(session.user);
     });
@@ -109,7 +128,7 @@ const App: React.FC = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session?.user) {
         fetchFullUserProfile(session.user);
-      } else {
+      } else if (!demoActive) {
         setIsLoggedIn(false);
         setCurrentUser(null);
         setCondoData({ name: 'CondoSmart', cnpj: '', adminName: '', syndicName: '', staff: [], subscriptionStatus: SubscriptionStatus.PENDING, currentPlan: PlanType.NONE });
@@ -119,20 +138,55 @@ const App: React.FC = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const handleDemoLogin = (role: UserRole) => {
+  // Timer de verificação de expiração periódica
+  useEffect(() => {
+    if (isDemoMode) {
+      const interval = setInterval(() => {
+        const expiry = localStorage.getItem('condosmart_demo_expiry');
+        if (expiry && Date.now() > parseInt(expiry)) {
+          handleLogout();
+          alert("Sua sessão de demonstração expirou.");
+        }
+      }, 10000);
+      return () => clearInterval(interval);
+    }
+  }, [isDemoMode]);
+
+  const handleDemoLogin = (role: UserRole, resetTimer: boolean = true) => {
     setCurrentUser({
-      name: 'Usuário Demo',
-      photo: `https://ui-avatars.com/api/?name=Demo&background=6366f1&color=fff`,
+      name: 'Admin Demonstração',
+      photo: `https://ui-avatars.com/api/?name=Admin&background=6366f1&color=fff`,
       role: role,
       plan: PlanType.PREMIUM_AI
     });
-    setCondoData(prev => ({ ...prev, name: 'Condomínio Demonstrativo', subscriptionStatus: SubscriptionStatus.ACTIVE, currentPlan: PlanType.PREMIUM_AI }));
+    setCondoData({ 
+      name: 'Condomínio de Demonstração', 
+      cnpj: '00.000.000/0001-99',
+      adminName: 'Cid Engenharia',
+      syndicName: 'Admin Demo',
+      staff: [
+        { id: '1', name: 'Zelador Exemplo', phone: '5571999999999', email: 'zelador@demo.com', role: 'Zelador' }
+      ],
+      subscriptionStatus: SubscriptionStatus.ACTIVE, 
+      currentPlan: PlanType.PREMIUM_AI 
+    });
+    
+    if (resetTimer) {
+      const expiry = Date.now() + (DEMO_EXPIRATION_MINUTES * 60 * 1000);
+      localStorage.setItem('condosmart_demo_expiry', expiry.toString());
+      localStorage.setItem('condosmart_demo_active', 'true');
+    }
+    
+    setIsDemoMode(true);
     setIsLoggedIn(true);
     setCurrentView(AppView.DASHBOARD);
   };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    localStorage.removeItem('condosmart_demo_expiry');
+    localStorage.removeItem('condosmart_demo_active');
+    setIsDemoMode(false);
     setIsLoggedIn(false);
     setCurrentUser(null);
     setCurrentView(AppView.PLANS);
@@ -148,6 +202,7 @@ const App: React.FC = () => {
   }
 
   const isBillingRestricted = isLoggedIn && 
+                              !isDemoMode &&
                               currentUser?.role === UserRole.CONDO_ADMIN && 
                               condoData.subscriptionStatus !== SubscriptionStatus.ACTIVE &&
                               condoData.subscriptionStatus !== SubscriptionStatus.TRIAL &&
@@ -174,8 +229,16 @@ const App: React.FC = () => {
           currentUser={currentUser}
           condoName={condoData.name}
           condoLogo={condoData.logoUrl}
+          isDemoMode={isDemoMode}
         />
         
+        {isDemoMode && (
+          <div className="bg-indigo-600 text-white px-6 py-2 flex items-center justify-center gap-3 animate-pulse">
+            <i className="fas fa-clock"></i>
+            <span className="text-[9px] font-black uppercase tracking-[0.2em]">Sessão de Demonstração Ativa - Expira em breve</span>
+          </div>
+        )}
+
         {isBillingRestricted && currentView !== AppView.PLANS && currentView !== AppView.BILLING && (
           <div className="bg-amber-500 text-white px-6 py-2 flex items-center justify-center gap-3 animate-slideDown">
             <i className="fas fa-exclamation-triangle"></i>
@@ -191,7 +254,7 @@ const App: React.FC = () => {
                 onSelectPlan={() => setCurrentView(AppView.LOGIN)} 
                 currentPlan={condoData.currentPlan || PlanType.NONE} 
                 isLoggedIn={isLoggedIn}
-                isCondoAdmin={currentUser?.role === UserRole.CONDO_ADMIN}
+                isCondoAdmin={currentUser?.role === UserRole.CONDO_ADMIN || isDemoMode}
               />
             )}
 
