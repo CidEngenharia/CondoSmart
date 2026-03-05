@@ -61,7 +61,7 @@ const Plans: React.FC<PlansProps> = ({ onSelectPlan, currentPlan, isLoggedIn, is
     }
 
     setLoading(plan.type);
-    
+
     try {
       // 1. Obter usuário e condomínio vinculado
       const { data: { user } } = await supabase.auth.getUser();
@@ -78,22 +78,30 @@ const Plans: React.FC<PlansProps> = ({ onSelectPlan, currentPlan, isLoggedIn, is
         return;
       }
 
-      // 2. Simulação de Checkout (Delay de processamento bancário)
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // 2. Chamar API de Checkout do Stripe
+      const response = await fetch('/api/checkout/session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          planType: plan.type,
+          condominioId: profile.condominio_id,
+          successUrl: window.location.origin + '/painel.html?payment=success',
+          cancelUrl: window.location.origin + '/painel.html?payment=cancel',
+        }),
+      });
 
-      // 3. Atualizar status no Supabase
-      const { error } = await supabase
-        .from('condominios')
-        .update({ 
-          status_assinatura: 'active',
-          plano_ativo: plan.type
-        })
-        .eq('id', profile.condominio_id);
+      const { url, error } = await response.json();
 
-      if (error) throw error;
+      if (error) throw new Error(error);
 
-      alert(`Sucesso! O plano ${plan.name} foi ativado para o seu condomínio.`);
-      window.location.reload(); // Recarrega para aplicar as mudanças de acesso
+      // 3. Redirecionar para o Checkout do Stripe
+      if (url) {
+        window.location.href = url;
+      } else {
+        throw new Error("Não foi possível gerar a sessão de pagamento.");
+      }
     } catch (err: any) {
       console.error(err);
       alert("Erro ao processar assinatura: " + err.message);
@@ -107,10 +115,10 @@ const Plans: React.FC<PlansProps> = ({ onSelectPlan, currentPlan, isLoggedIn, is
       <div className="text-center max-w-2xl mx-auto space-y-4">
         <h2 className="text-4xl font-black text-slate-900 tracking-tight uppercase leading-none">A Gestão que seu condomínio merece</h2>
         <p className="text-slate-500 text-lg font-medium italic">Escalabilidade, segurança e Inteligência Artificial em um só lugar.</p>
-        
+
         {isLoggedIn && !isCondoAdmin && (
           <div className="bg-amber-50 border border-amber-100 p-4 rounded-2xl inline-block shadow-sm">
-             <p className="text-xs font-bold text-amber-700">Acesso de morador: Apenas o síndico pode realizar alterações financeiras.</p>
+            <p className="text-xs font-bold text-amber-700">Acesso de morador: Apenas o síndico pode realizar alterações financeiras.</p>
           </div>
         )}
       </div>
@@ -127,7 +135,7 @@ const Plans: React.FC<PlansProps> = ({ onSelectPlan, currentPlan, isLoggedIn, is
               </div>
               <p className={`text-sm leading-relaxed ${plan.highlight ? 'text-indigo-100' : 'text-slate-500 font-medium italic'}`}>{plan.description}</p>
             </div>
-            
+
             <div className="mb-10 flex items-baseline gap-2">
               <span className="text-5xl font-black tracking-tighter">{plan.price}</span>
               <span className={`text-xs font-black uppercase tracking-widest ${plan.highlight ? 'text-indigo-200' : 'text-slate-400'}`}>{plan.period}</span>
@@ -144,7 +152,7 @@ const Plans: React.FC<PlansProps> = ({ onSelectPlan, currentPlan, isLoggedIn, is
               ))}
             </div>
 
-            <button 
+            <button
               onClick={() => handlePlanAction(plan)}
               disabled={(isLoggedIn && !isCondoAdmin) || loading !== null}
               className={`w-full py-6 rounded-[1.8rem] font-black uppercase text-xs tracking-widest shadow-2xl transition-all ${plan.btnColor} hover:scale-105 flex items-center justify-center gap-3 active:scale-95 disabled:opacity-50`}
@@ -161,16 +169,16 @@ const Plans: React.FC<PlansProps> = ({ onSelectPlan, currentPlan, isLoggedIn, is
           </div>
         ))}
       </div>
-      
+
       <div className="text-center pt-8 space-y-4">
-         <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Pagamento Seguro & Criptografia 256-bit</p>
-         <div className="flex justify-center gap-6 opacity-30 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-700">
-            <i className="fab fa-cc-visa text-3xl"></i>
-            <i className="fab fa-cc-mastercard text-3xl"></i>
-            <i className="fab fa-cc-stripe text-3xl"></i>
-            <i className="fas fa-barcode text-3xl"></i>
-            <i className="fas fa-qrcode text-3xl"></i>
-         </div>
+        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Pagamento Seguro & Criptografia 256-bit</p>
+        <div className="flex justify-center gap-6 opacity-30 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-700">
+          <i className="fab fa-cc-visa text-3xl"></i>
+          <i className="fab fa-cc-mastercard text-3xl"></i>
+          <i className="fab fa-cc-stripe text-3xl"></i>
+          <i className="fas fa-barcode text-3xl"></i>
+          <i className="fas fa-qrcode text-3xl"></i>
+        </div>
       </div>
     </div>
   );
