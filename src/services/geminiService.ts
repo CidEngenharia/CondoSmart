@@ -10,7 +10,7 @@ export const chatWithGemini = async (message: string, history: { role: 'user' | 
       systemInstruction: 'You are an intelligent assistant for a luxury condominium called "CondoSmarTI". Help residents with facility bookings, rules, service requests, and general local information. Use a professional and welcoming tone.',
     },
   });
-  
+
   const result = await chat.sendMessage({ message });
   return result.text;
 };
@@ -37,7 +37,7 @@ export const generateImagePro = async (prompt: string, size: "1K" | "2K" | "4K" 
         aspectRatio: "1:1",
         imageSize: size
       },
-      tools: [{ google_search: {} }]
+      tools: [{ googleSearch: {} }]
     },
   });
 
@@ -60,7 +60,7 @@ export const editImageWithPrompt = async (base64Image: string, prompt: string, m
       ],
     },
   });
-  
+
   for (const part of response.candidates?.[0]?.content?.parts || []) {
     if (part.inlineData) {
       return `data:image/png;base64,${part.inlineData.data}`;
@@ -86,7 +86,7 @@ export const generateVideoVeo = async (prompt: string, imageBase64?: string, mim
   }
 
   let operation = await ai.models.generateVideos(config);
-  
+
   while (!operation.done) {
     await new Promise(resolve => setTimeout(resolve, 10000));
     operation = await ai.operations.getVideosOperation({ operation: operation });
@@ -142,6 +142,6 @@ export const generateSpeech = async (text: string) => {
 
   const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
   if (!base64Audio) return null;
-  
+
   return base64Audio;
 };

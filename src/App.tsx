@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { AppView, PlanType, User, UserRole, CondoData, Alert, SubscriptionStatus } from './services/types';
-import Sidebar from './src/components/Sidebar';
-import Header from './src/components/Header';
+import Sidebar from './components/Sidebar';
+import Header from './components/Header';
 import Dashboard from './services/views/Dashboard';
 import Services from './services/views/Services';
 import Concierge from './services/views/Concierge';
 import CreativeStudio from './services/views/CreativeStudio';
-import Plans from './src/services/views/Plans';
+import Plans from './services/views/Plans';
 import About from './services/views/About';
 import Residents from './services/views/Residents';
 import Vehicles from './services/views/Vehicles';
@@ -18,7 +18,7 @@ import CreateCondo from './services/views/CreateCondo';
 import Billing from './services/views/Billing';
 import LandingPage from './services/views/LandingPage';
 import { supabase } from './js/supabase';
-import ToastProvider from './src/components/ToastProvider';
+import ToastProvider from './components/ToastProvider';
 import toast from 'react-hot-toast';
 
 const App: React.FC = () => {

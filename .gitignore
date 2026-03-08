@@ -25,3 +25,9 @@ dist-ssr
 
 # Local Tools
 tools/
+
+.vercel
+.env*.local
+
+# Logs and error files
+*.txt
